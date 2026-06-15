@@ -1,0 +1,6 @@
+{
+  "name": "Aura",
+  "description": "A premium AI wellness and productivity companion offering habit building, mood tracking, selective focus, and curated AI affirmations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
