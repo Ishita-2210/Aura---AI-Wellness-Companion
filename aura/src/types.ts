@@ -33,6 +33,7 @@ export interface Goal {
 }
 
 export interface Affirmation {
+  source?: "gemini" | "curated";
   text: string;
   subtitle: string;
   accentColor: string; // pink, purple, blue, lavender, cream

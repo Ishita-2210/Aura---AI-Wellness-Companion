@@ -288,7 +288,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen text-neutral-800 dark:text-neutral-100 transition-colors duration-500 overflow-x-hidden">
+    <div className="relative isolate min-h-screen text-neutral-800 dark:text-neutral-100 transition-colors duration-500 overflow-x-hidden">
       
       {/* Background Layer with mouse glow movement */}
       <AuroraBackground />
@@ -428,7 +428,7 @@ export default function App() {
                   </h1>
                   <p className="text-xs font-mono text-neutral-400 uppercase tracking-widest mt-1">
                     {activeTab === "centroid" && "Aggregate emotional indices and trend forecasts"}
-                    {activeTab === "affirmations" && "Personalized AI affirmations securely generated via server models"}
+                    {activeTab === "affirmations" && "Reflections from a configured model or clearly labelled curated text"}
                     {activeTab === "timer" && "Deep concentration clock with pranayama breathing cues"}
                     {activeTab === "disciplines" && "Check completion metrics to build consecutive strengths"}
                     {activeTab === "scrolls" && "Secure private chronicles summarizing inner learnings"}

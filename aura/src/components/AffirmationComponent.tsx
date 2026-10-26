@@ -21,11 +21,13 @@ export default function AffirmationComponent({ onSaveAffirmation, savedAffirmati
   const [customFocus, setCustomFocus] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentAffirmation, setCurrentAffirmation] = useState<Affirmation | null>(null);
+  const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [viewingSaved, setViewingSaved] = useState(false);
 
   const generateAffirmation = async () => {
     setLoading(true);
+    setError("");
     try {
       const response = await fetch("/api/affirmation", {
         method: "POST",
@@ -39,10 +41,12 @@ export default function AffirmationComponent({ onSaveAffirmation, savedAffirmati
         }),
       });
 
+      if (!response.ok) throw new Error("Affirmation request failed");
       const data = await response.json();
       setCurrentAffirmation(data);
     } catch (error) {
       console.error("Error generating affirmation:", error);
+      setError("Unable to load a reflection. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,6 +63,8 @@ export default function AffirmationComponent({ onSaveAffirmation, savedAffirmati
 
   return (
     <div className="w-full">
+      {error && <p role="alert" className="mb-4 text-sm text-rose-700 dark:text-rose-300">{error}</p>}
+      {currentAffirmation && <p className="mb-4 text-center text-xs text-neutral-500">{currentAffirmation.source === "gemini" ? "Generated with Gemini" : "Curated reflection"}</p>}
       
       {/* Tab Switcher (Create vs Saved Favorites list) */}
       <div className="flex justify-center mb-8 border-b border-neutral-300/10 max-w-sm mx-auto">
@@ -177,7 +183,7 @@ export default function AffirmationComponent({ onSaveAffirmation, savedAffirmati
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className={`rounded-3xl p-6.5 border shadow-xl relative overflow-hidden flex flex-col justify-between h-full bg-gradient-to-tr from-white/70 ${
+                    className={`rounded-3xl p-6.5 border shadow-xl relative overflow-hidden flex flex-col justify-between h-full bg-gradient-to-tr from-white/70 dark:from-[#120F22]/95 ${
                       currentAffirmation.accentColor === "pink" ? "to-[#FFD6E7]/30 border-[#FFD6E7]/40 text-[#E693B6]" :
                       currentAffirmation.accentColor === "lavender" ? "to-[#DCCBFF]/30 border-[#DCCBFF]/40 text-[#BFA9FF]" :
                       currentAffirmation.accentColor === "blue" ? "to-[#CDEBFF]/30 border-[#CDEBFF]/40 text-[#7EA9CD]" :

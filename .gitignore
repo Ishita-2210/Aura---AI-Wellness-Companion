@@ -1,0 +1,5 @@
+aura/node_modules/
+aura/dist/
+.env
+aura/.env
+*.log

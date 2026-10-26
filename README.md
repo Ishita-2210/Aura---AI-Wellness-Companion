@@ -1,111 +1,34 @@
-# ✨ Aura — Your Luxury Digital Sanctuary
+# Aura — wellness and focus companion
 
-Aura is a premium AI-powered wellness and productivity platform designed to help users cultivate focus, emotional awareness, and intentional daily habits through a beautifully crafted digital experience.
+A React/TypeScript interface for mood entries, habits, journaling, goals, focus sessions and saved affirmations. An Express server provides optional Gemini affirmation generation, with explicitly labelled curated reflections when no key is configured or generation fails.
 
-Built during Google's 5-Day AI Agents Intensive on Kaggle, Aura explores how modern AI-assisted development can transform an idea into a fully deployed product in hours rather than weeks.
+## Run locally
 
-## 🌙 Vision
+Requires Node.js 24 and npm. From the repository root:
 
-Most productivity tools focus on output.
+```sh
+cd aura
+npm ci
+npm run dev
+```
 
-Aura focuses on balance.
+Open http://localhost:3000. The server uses Vite middleware during development. Copy `.env.example` to `.env` inside `aura` to configure `PORT`, optional `GEMINI_API_KEY` and `GEMINI_MODEL`. Keep the key server-side. No key is needed for curated mode. The model default is inherited from the original project; provider availability and permissions must be checked against your account before enabling it.
 
-The platform combines wellness, self-reflection, habit formation, and productivity into a single immersive experience designed around calmness, elegance, and intentional living.
+## Build and check
 
-## 🚀 Live Experience
+```sh
+npm run lint
+npm test
+npm run build
+npm start
+```
 
-**Live Application**
+`npm start` serves the production `dist` build and API on one port. `GET /api/health` reports the configured affirmation mode. Tests run actual HTTP requests against a temporary local listener, covering curated content, provenance and request validation without contacting Gemini.
 
-https://aura-612216276716.asia-southeast1.run.app
+`POST /api/affirmation` accepts optional string fields `mood`, `category` and `customFocus` (up to 1,000 characters for focus). Responses include `text`, `subtitle`, `accentColor`, three `wellnessPoints`, `ritual` and `source` (`gemini` or `curated`). Generated JSON is validated before being returned. Invalid requests return 400; provider errors fall back to curated content with the correct source label.
 
-## 🎯 Core Experiences
+## Data and limits
 
-### Emotional Intelligence
+Personal entries are stored in browser local storage, with no accounts, server database or cross-device synchronization. Do not rely on local storage as a backup. Some initial UI content is example data. The app is a wellness/productivity prototype, not an evaluated health intervention. Live Gemini generation requires external credentials and is separate from the verified offline tests.
 
-* Daily mood tracking
-* Emotional trend visualization
-* Reflection-driven wellness workflows
-
-### Productivity
-
-* Focus timer with immersive UI
-* Goal management system
-* Progress analytics dashboard
-
-### Habit Formation
-
-* Habit tracking
-* Consistency monitoring
-* Streak-based motivation system
-
-### Personal Growth
-
-* Guided journaling
-* Daily inspiration hub
-* AI-powered affirmation generation
-
-## 🎨 Design Philosophy
-
-Aura was designed as a luxury consumer product rather than a traditional dashboard.
-
-Inspired by:
-
-* Apple
-* Linear
-* Notion
-* Headspace
-* Modern Product Hunt launches
-
-Design highlights include:
-
-* Glassmorphism interfaces
-* Aurora-inspired gradients
-* Soft pastel color systems
-* Elegant typography
-* Micro-interactions
-* Responsive layouts
-* Premium motion design
-
-## 🛠 Technology Stack
-
-### Frontend
-
-* React
-* TypeScript
-* Vite
-
-### AI
-
-* Google Gemini
-
-### Deployment
-
-* Google AI Studio
-* Google Cloud Run
-
-## 🤖 AI-Assisted Development
-
-Aura was developed using Google's AI-native development workflow, leveraging AI Studio and modern agentic development practices to rapidly prototype, iterate, refine, and deploy a production-ready application.
-
-## 🌟 What This Project Demonstrates
-
-* AI-assisted product development
-* Rapid prototyping workflows
-* Modern frontend architecture
-* Prompt-driven software engineering
-* Cloud deployment pipelines
-* Product design thinking
-* User experience focused development
-
-## 📌 Future Roadmap
-
-* Personalized AI wellness coach
-* Advanced analytics
-* User authentication
-* Cross-device synchronization
-* Intelligent habit recommendations
-* Mood prediction insights
-
----
-
-Built with curiosity, creativity, and a lot of experimentation during Google's AI Agents Intensive.
+The earlier README referenced a Cloud Run deployment; it is not presented as a verified live demo here. Deployment configuration and its current availability require separate verification. No completed authentication, mood prediction or personalized coaching capability is claimed.

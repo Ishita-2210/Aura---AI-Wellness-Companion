@@ -7,10 +7,19 @@ import { GoogleGenAI, Type } from "@google/genai";
 // Load environment variables
 dotenv.config();
 
-const app = express();
-const PORT = 3000;
+export const app = express();
+const PORT = Number(process.env.PORT ?? 3000);
+const isProduction = process.env.NODE_ENV === "production" || process.argv.includes("--production");
 
-app.use(express.json());
+app.use(express.json({ limit: "16kb" }));
+app.use((error: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (error instanceof SyntaxError) return res.status(400).json({ error: "Invalid JSON body" });
+  if (typeof error === "object" && error !== null && "status" in error && error.status === 413) {
+    return res.status(413).json({ error: "Request body is too large" });
+  }
+  next(error);
+});
+app.get("/api/health", (_req, res) => res.json({ status: "ok", affirmationMode: ai ? "gemini" : "curated" }));
 
 // Initialize Gemini Client
 const apiKey = process.env.GEMINI_API_KEY;
@@ -85,7 +94,16 @@ const FALLBACK_AFFIRMATIONS = [
 
 // Server-side AI Affirmation endpoint
 app.post("/api/affirmation", async (req, res) => {
+  if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+    return res.status(400).json({ error: "Expected a JSON object" });
+  }
   const { mood, category, customFocus } = req.body;
+  for (const [field, value] of Object.entries({ mood, category, customFocus })) {
+    const maxLength = field === "customFocus" ? 1000 : 80;
+    if (value !== undefined && (typeof value !== "string" || value.length > maxLength)) {
+      return res.status(400).json({ error: `${field} must be a string of at most ${maxLength} characters` });
+    }
+  }
 
   if (!ai) {
     // If Gemini is unconfigured, return a random beautiful fallback, customized by category if possible
@@ -101,11 +119,12 @@ app.post("/api/affirmation", async (req, res) => {
       // Intelligently brand it with their custom focus for a highly personalized fallback feel
       return res.json({
         ...fallback,
+        source: "curated",
         text: `As you focus on "${customFocus}": ${fallback.text}`,
         subtitle: `Customized for your aspiration`
       });
     }
-    return res.json(fallback);
+    return res.json({ ...fallback, source: "curated" });
   }
 
   try {
@@ -130,7 +149,7 @@ You MUST return a JSON object containing exactly these fields (strictly conformi
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: process.env.GEMINI_MODEL || "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -153,18 +172,25 @@ You MUST return a JSON object containing exactly these fields (strictly conformi
     });
 
     const data = JSON.parse(response.text || "{}");
-    return res.json(data);
+    if (typeof data.text !== "string" || !data.text.trim() ||
+        typeof data.subtitle !== "string" || typeof data.ritual !== "string" ||
+        !["pink", "purple", "blue", "lavender", "cream"].includes(data.accentColor) ||
+        !Array.isArray(data.wellnessPoints) || data.wellnessPoints.length !== 3 ||
+        !data.wellnessPoints.every((point: unknown) => typeof point === "string")) {
+      throw new Error("Invalid affirmation response");
+    }
+    return res.json({ ...data, source: "gemini" });
   } catch (error) {
     console.error("Gemini affirmation generation error:", error);
     // Return high-quality fallback on error rather than a raw message to maintain luxurious user experience
     const defaultFallback = FALLBACK_AFFIRMATIONS[Math.floor(Math.random() * FALLBACK_AFFIRMATIONS.length)];
-    return res.json(defaultFallback);
+    return res.json({ ...defaultFallback, source: "curated" });
   }
 });
 
 // Setup development or production build flows
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProduction) {
     // Vite middleware for real-time asset compilation
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -185,4 +211,9 @@ async function startServer() {
   });
 }
 
-startServer();
+if (process.env.AURA_TEST_MODE !== "1") {
+  startServer().catch(() => {
+    console.error("Aura could not start. Check configuration and build output.");
+    process.exitCode = 1;
+  });
+}

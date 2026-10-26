@@ -418,7 +418,7 @@ export default function LandingPage({ onEnterApp, isDark, toggleTheme }: Landing
                 </div>
                 <h3 className="text-xl font-serif text-neutral-800 dark:text-white mb-2">Google Gemini AI Whispers</h3>
                 <p className="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans mb-8">
-                  Receive personalized, highly tailored affirmations generated securely by cloud models based strictly on your exact circumstances.
+                  Choose a theme for curated reflections, or configure the server to generate affirmations with Gemini.
                 </p>
               </div>
               <span className="self-start px-2.5 py-1 rounded bg-purple-50 dark:bg-[#DCCBFF]/15 text-xs text-purple-700 dark:text-[#DCCBFF] font-mono uppercase tracking-wide border border-purple-100 dark:border-[#DCCBFF]/15">
@@ -460,46 +460,38 @@ export default function LandingPage({ onEnterApp, isDark, toggleTheme }: Landing
                 </div>
                 <h3 className="text-xl font-serif text-neutral-800 dark:text-white mb-2">Private Chronicles</h3>
                 <p className="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans">
-                  Fully secure chronological journal archives complete with fullphrase keyword search and category tags.
+                  Browser-local journal entries with keyword search and category tags. Entries are not encrypted or synced by the app.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* TESTIMONIALS OF LIGHT */}
+        {/* WORKFLOW EXAMPLES */}
         <div className="w-full text-center mb-28">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-[#BFA9FF] mb-3">COSMIC COMMUNICATIONS</p>
-          <h2 className="text-3xl md:text-4xl font-serif text-neutral-900 dark:text-white mb-14">Whispers of gentle change.</h2>
+          <p className="text-[10px] font-mono uppercase tracking-widest text-[#BFA9FF] mb-3">EVERYDAY WORKFLOWS</p>
+          <h2 className="text-3xl md:text-4xl font-serif text-neutral-900 dark:text-white mb-14">Three ways to use your workspace.</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7 max-w-6xl">
             {[
               {
-                text: "Aura has replaced several clumsy tracking apps. The layout is actual visual aromatherapy—the glass panels feel physical.",
-                name: "Isla Thorne",
-                title: "Creative Director, Seed Studio",
-                stars: 5
+                text: "Record a mood rating, add a note and revisit the entries stored in this browser.",
+                name: "Notice patterns",
+                title: "Mood journal"
               },
               {
-                text: "Aesthetically flawless spatial design. The AI affirmation generator matches my state of mind with beautiful precision, curing my pre-presentation nerves.",
-                name: "Marcus Sterling",
-                title: "Senior Product Architect, Voxel",
-                stars: 5
+                text: "Choose a reflection theme. Use curated text offline or a configured server-side Gemini model.",
+                name: "Take a reflective pause",
+                title: "Affirmations"
               },
               {
-                text: "The integration of focus timer cycles directly alongside my journal completely reformed my evening wind-down routine into a luxury experience.",
-                name: "Clarissa Vance",
-                title: "UX Lead, Collective Space",
-                stars: 5
+                text: "Start a focus session and keep your goals, habits and journal in the same workspace.",
+                name: "Plan a focused session",
+                title: "Timer and goals"
               }
             ].map((t, i) => (
               <div key={i} className="p-7.5 rounded-2xl bg-white/30 dark:bg-[#120F22]/30 border border-white/15 dark:border-white/5 text-left backdrop-blur-xl">
-                <div className="flex space-x-1 mb-4 text-[#BFA9FF]">
-                  {[...Array(t.stars)].map((_, s) => (
-                    <Star key={s} className="w-3 h-3 fill-current" />
-                  ))}
-                </div>
-                <p className="text-xs md:text-[13px] text-neutral-605 dark:text-neutral-350 italic leading-relaxed mb-6 font-serif">"{t.text}"</p>
+                <p className="text-xs md:text-[13px] text-neutral-605 dark:text-neutral-350 italic leading-relaxed mb-6 font-serif">{t.text}</p>
                 <div>
                   <h4 className="text-xs font-bold text-neutral-800 dark:text-white">{t.name}</h4>
                   <p className="text-[9px] text-[#BFA9FF] uppercase tracking-wider font-mono mt-0.5">{t.title}</p>

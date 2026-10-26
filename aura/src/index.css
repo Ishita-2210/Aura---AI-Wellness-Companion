@@ -3,6 +3,21 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+body {
+  margin: 0;
+  background: #faf8f6;
+  color: #262626;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #07050f;
+  color: #f5f5f5;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
